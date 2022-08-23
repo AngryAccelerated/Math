@@ -5,7 +5,7 @@
 #include "vec2.h"
 namespace Math
 {
-
+    //row first
     struct Mat3
     {
         Mat3();

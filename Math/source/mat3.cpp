@@ -22,14 +22,17 @@ namespace Math
 		const real& e10, const real& e11, const real& e12,
 		const real& e20, const real& e21, const real& e22)
 	{
+		set(
+			e00, e01, e02,
+			e10, e11, e12,
+			e20, e21, e22);
 	}
 
 	Mat3& Mat3::operator=(const Mat3& rhs)
 	{
 		if (&rhs != this)
-		{
-			
-		}
+			set(rhs);
+		
 		return *this;
 	}
 
@@ -126,7 +129,7 @@ namespace Math
 
 	Mat3& Mat3::transpose()
 	{
-
+		
 		return *this;
 	}
 
@@ -138,7 +141,9 @@ namespace Math
 
 	Mat3& Mat3::clear()
 	{
-
+		r0.clear();
+		r1.clear();
+		r2.clear();
 		return *this;
 	}
 
@@ -147,19 +152,25 @@ namespace Math
 		const real& e10, const real& e11, const real& e12,
 		const real& e20, const real& e21, const real& e22)
 	{
-
+		r0.set(e00, e01, e02);
+		r1.set(e10, e11, e12);
+		r2.set(e20, e21, e22);
 		return *this;
 	}
 
-	Mat3& Mat3::set(const Vec3& col1, const Vec3& col2, const Vec3& col3)
+	Mat3& Mat3::set(const Vec3& _r0, const Vec3& _r1, const Vec3& _r2)
 	{
-
+		r0.set(_r0);
+		r1.set(_r1);
+		r2.set(_r2);
 		return *this;
 	}
 
 	Mat3& Mat3::set(const Mat3& other)
 	{
-
+		r0.set(other.r0);
+		r1.set(other.r1);
+		r2.set(other.r2);
 		return *this;
 	}
 

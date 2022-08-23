@@ -7,14 +7,20 @@ namespace Math
 		clear();
 	}
 
-	Mat4::Mat4(const Vec4& r1, const Vec4& r2, const Vec4& r3, const Vec4& r4)
+	Mat4::Mat4(const Vec4& r0, const Vec4& r1, const Vec4& r2, const Vec4& r3)
 	{
+		set(r0, r1, r2, r3);
 	}
 	Mat4::Mat4(const real& e00, const real& e01, const real& e02, const real& e03,
 		const real& e10, const real& e11, const real& e12, const real& e13,
 		const real& e20, const real& e21, const real& e22, const real& e23,
 		const real& e30, const real& e31, const real& e32, const real& e33)
 	{
+		set(
+			e00, e01, e02, e03,
+			e10, e11, e12, e13,
+			e20, e21, e22, e23,
+			e30, e31, e32, e33);
 	}
 	Mat4::Mat4(const Mat3& mat)
 	{
@@ -166,18 +172,28 @@ namespace Math
 		const real& _e30, const real& _e31, const real& _e32, const real& _e33)
 	{
 
+		_mm256_store_ps(&f[0],
+			_mm256_setr_ps(_e00, _e01, _e02, _e03, _e10, _e11, _e12, _e13));
+		_mm256_store_ps(&f[8],
+			_mm256_setr_ps(_e20, _e21, _e22, _e23, _e30, _e31, _e32, _e33));
 		return *this;
 	}
 
-	Mat4& Mat4::set(const Vec4& col1, const Vec4& col2, const Vec4& col3, const Vec4& col4)
+	Mat4& Mat4::set(const Vec4& _r0, const Vec4& _r1, const Vec4& _r2, const Vec4& _r3)
 	{
-
+		_mm256_store_ps(&f[0],
+			_mm256_setr_m128(_r0.data, _r1.data));
+		_mm256_store_ps(&f[8],
+			_mm256_setr_m128(_r2.data, _r3.data));
 		return *this;
 	}
 
 	Mat4& Mat4::set(const Mat4& other)
 	{
-
+		_mm256_store_ps(&f[0],
+			other.data[0]);
+		_mm256_store_ps(&f[8],
+			other.data[1]);
 		return *this;
 	}
 
@@ -188,7 +204,10 @@ namespace Math
 
 	Mat4& Mat4::clear()
 	{
-		_mm512_store_ps(f, _mm512_setzero_ps());
+		_mm256_store_ps(&f[0],
+			_mm256_setzero_ps());
+		_mm256_store_ps(&f[8],
+			_mm256_setzero_ps());
 		return *this;
 	}
 
@@ -236,12 +255,22 @@ namespace Math
 
 	Mat4 Mat4::multiply(const Mat4& lhs, const Mat4& rhs)
 	{
+		//lhs: x0 y0 z0 w0
+		//rhs: 
 		return { };
 	}
 
 	Vec4 Mat4::multiply(const Mat4& lhs, const Vec4& rhs)
 	{
-		return { };
+		//lhs: x0 y0 z0 w0
+		//rhs: x0 y0 z0 w0
+		__m256 r = _mm256_set_m128(rhs.data, rhs.data);
+		__m256 temp1 = _mm256_dp_ps(r, lhs.data[0], 0xff);
+		__m256 temp2 = _mm256_dp_ps(r, lhs.data[1], 0xff);
+		float* r01 = reinterpret_cast<float*>(&temp1);
+		float* r02 = reinterpret_cast<float*>(&temp2);
+		//lhs:
+		return { _mm_setr_ps(r01[0], r01[4], r02[0], r02[4])};
 	}
 
 	real Mat4::determinant(const Mat4& mat)

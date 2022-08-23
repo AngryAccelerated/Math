@@ -93,7 +93,9 @@ namespace Math
             };
             Vec4 v[4];
             float f[16];
-            __m512 data;
+            //data[0]: r0 r1
+            //data[1]: r2 r3
+            __m256 data[2];
         };
     };
 }
