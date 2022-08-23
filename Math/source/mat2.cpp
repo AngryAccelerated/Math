@@ -13,12 +13,14 @@ namespace Math
 	}
 
 
-	Mat2::Mat2(const Vec2& col0, const Vec2& col1) : c0(col0), c1(col1)
+	Mat2::Mat2(const Vec2& _r0, const Vec2& _r1) : r0(_r0), r1(_r1)
 	{
 	}
 
-	Mat2::Mat2(const real& c0x, const real& c0y, const real& c1x, const real& c1y)
-		: data(_mm_setr_ps(c0x, c0y, c1x, c1y))
+	Mat2::Mat2(
+		const real& e00, const real& e01,
+		const real& e10, const real& e11)
+		: data(_mm_setr_ps(e00, e01, e10, e11))
 	{
 	}
 
@@ -81,33 +83,33 @@ namespace Math
 		return v[index];
 	}
 
-	Vec2 Mat2::row1() const
+	Vec2 Mat2::c0() const
 	{
-		return Vec2(c0.x, c1.x);
+		return Vec2(f[0], f[2]);
 	}
 
-	Vec2 Mat2::row2() const
+	Vec2 Mat2::c1() const
 	{
-		return Vec2(c0.y, c1.y);
+		return Vec2(f[1], f[3]);
 	}
 
 	real Mat2::e00()const
 	{
-		return c0.x;
+		return f[0];
 	}
 
 	real Mat2::e01()const
 	{
-		return c0.y;
+		return f[1];
 	}
 	real Mat2::e10()const
 	{
-		return c1.x;
+		return f[2];
 	}
 
 	real Mat2::e11()const
 	{
-		return c1.y;
+		return f[3];
 	}
 
 	real Mat2::determinant() const
@@ -117,7 +119,7 @@ namespace Math
 
 	Mat2& Mat2::transpose()
 	{
-		realSwap(c0.y, c1.x);
+		realSwap(r1.x, r0.y);
 		return *this;
 	}
 
@@ -166,7 +168,15 @@ namespace Math
 	{
 		const real c = Math::cosx(radian);
 		const real s = Math::sinx(radian);
-		_mm_store_ps(f, _mm_setr_ps(c, s, -s, c));
+		_mm_store_ps(f, _mm_setr_ps(c, -s, s, c));
+		return *this;
+	}
+
+	Mat2& Mat2::swap(Mat2& other)
+	{
+		__m128 temp = other.data;
+		_mm_store_ps(f, other.data);
+		_mm_store_ps(other.f, temp);
 		return *this;
 	}
 
@@ -184,7 +194,7 @@ namespace Math
 
 	Vec2 Mat2::multiply(const Mat2& lhs, const Vec2& rhs)
 	{
-		return Vec2(lhs.c0.x * rhs.x + lhs.c1.x * rhs.y, lhs.c0.y * rhs.x + lhs.c1.y * rhs.y);
+		return Vec2();
 	}
 
 	Mat2 Mat2::multiply(const Mat2& lhs, const Mat2& rhs)
@@ -207,7 +217,7 @@ namespace Math
 
 	real Mat2::determinant(const Mat2& mat)
 	{
-		return mat.c0.x * mat.c1.y - mat.c1.x * mat.c0.y;
+		return ;
 	}
 
 	bool Mat2::invert(Mat2& mat)
@@ -217,7 +227,7 @@ namespace Math
 		if (realEqual(det, 0))
 			return false;
 
-		realSwap(mat.c0.x, mat.c1.y);
+		//realSwap(mat.c0.x, mat.c1.y);
 		mat.f[1] *= -1;
 		mat.f[2] *= -1;
 		mat /= det;

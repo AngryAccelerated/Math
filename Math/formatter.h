@@ -40,9 +40,9 @@ template<> struct fmt::formatter<Math::Mat3> : formatter<float> {
             "\n[{:.3f}, {:.3f}, {:.3f}]"
             "\n[{:.3f}, {:.3f}, {:.3f}]"
             "\n[{:.3f}, {:.3f}, {:.3f}]",
-            mat.e11(), mat.e12(), mat.e13(),
-            mat.e21(), mat.e22(), mat.e23(),
-            mat.e31(), mat.e32(), mat.e33());
+            mat.e00(), mat.e10(), mat.e20(),
+            mat.e01(), mat.e11(), mat.e21(),
+            mat.e02(), mat.e12(), mat.e22());
     }
 };
 template<> struct fmt::formatter<Math::Mat4> : formatter<float> {

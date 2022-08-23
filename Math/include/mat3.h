@@ -8,12 +8,13 @@ namespace Math
 
     struct Mat3
     {
-        Mat3() = default;
+        Mat3();
         Mat3(const Mat3& mat);
-        Mat3(const Vec3& c0, const Vec3& c1, const Vec3& c2);
-        Mat3(const real& c0x, const real& col1_y, const real& col1_z,
-            const real& col2_x, const real& col2_y, const real& col2_z,
-            const real& col3_x, const real& col3_y, const real& col3_z);
+        Mat3(const Vec3& r0, const Vec3& r1, const Vec3& r2);
+        Mat3(
+            const real& e00, const real& e01, const real& e02,
+            const real& e10, const real& e11, const real& e12,
+            const real& e20, const real& e21, const real& e22);
         Mat3(Mat3&& other) = default;
 
         Mat3& operator=(const Mat3& rhs);
@@ -22,26 +23,27 @@ namespace Math
         Mat3& operator*=(const real& factor);
         Mat3& operator/=(const real& factor);
 
-        Vec3 row1()const;
-        Vec3 row2()const;
-        Vec3 row3()const;
+        Vec3 c0()const;
+        Vec3 c1()const;
+        Vec3 c2()const;
 
+        real e00()const;
+        real e01()const;
+        real e02()const;
+
+        real e10()const;
         real e11()const;
         real e12()const;
-        real e13()const;
 
+        real e20()const;
         real e21()const;
         real e22()const;
-        real e23()const;
 
-        real e31()const;
-        real e32()const;
-        real e33()const;
-
-        Mat3& set(const real& col1_x, const real& col1_y, const real& col1_z,
-            const real& col2_x, const real& col2_y, const real& col2_z,
-            const real& col3_x, const real& col3_y, const real& col3_z);
-        Mat3& set(const Vec3& col1, const Vec3& col2, const Vec3& col3);
+        Mat3& set(
+            const real& e00, const real& e01, const real& e02,
+            const real& e10, const real& e11, const real& e12,
+            const real& e20, const real& e21, const real& e22);
+        Mat3& set(const Vec3& r0, const Vec3& r1, const Vec3& r2);
         Mat3& set(const Mat3& other);
         Mat3& clear();
 
@@ -59,9 +61,17 @@ namespace Math
         static Mat3 rotate(const Vec3& axis, const real& deg);
         static bool invert(Mat3& mat);
 
-        Vec3 column1;
-        Vec3 column2;
-        Vec3 column3;
+        union
+        {
+	        struct
+	        {
+                Vec3 r0;
+                Vec3 r1;
+                Vec3 r2;
+	        };
+            Vec3 v[3];
+            float f[12];
+        };
     };
 }
 #endif

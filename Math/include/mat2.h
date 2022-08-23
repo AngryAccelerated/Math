@@ -4,18 +4,18 @@
 #include "math.h"
 namespace Math
 {
-    //column first
+    //row first
     struct alignas(16) Mat2
     {
         Mat2();
         Mat2(const real& radian);
         Mat2(const Mat2& mat);
-        Mat2(const Vec2& c0, const Vec2& c1);
-        Mat2(const real& e00, const real& e01, const real& e10, const real& e11);
+        Mat2(const Vec2& r0, const Vec2& r1);
+        Mat2(
+            const real& e00, const real& e01, 
+            const real& e10, const real& e11);
         Mat2(__m128 d);
         Mat2(Mat2&& other) = default;
-
-
 
         Mat2& operator=(const Mat2& rhs);
         Mat2& operator+=(const Mat2& rhs);
@@ -27,8 +27,8 @@ namespace Math
         Vec2 operator[](uint8_t index)const;
 
 
-        Vec2 row1()const;
-        Vec2 row2()const;
+        Vec2 c0()const;
+        Vec2 c1()const;
 
         real e00()const;
         real e01()const;
@@ -43,10 +43,14 @@ namespace Math
         Vec2 multiply(const Vec2& rhs)const;
 
         Mat2& clear();
-        Mat2& set(const real& e00, const real& e01, const real& e10, const real& e11);
+        Mat2& set(
+            const real& e00, const real& e01,
+            const real& e10, const real& e11);
         Mat2& set(const Vec2& c0, const Vec2& c1);
         Mat2& set(const Mat2& other);
         Mat2& set(const real& radian);
+
+        Mat2& swap(Mat2& other);
 
         static Mat2 skewSymmetricMatrix(const Vec2& r);
         static Mat2 identity();
@@ -58,10 +62,12 @@ namespace Math
         union
         {
             float f[4]; //0 1 2 3 --> x0 y0 x1 y1
-            struct
+            //[x0 y0]
+            //[x1 y1]
+        	struct
             {
-                Vec2 c0;
-                Vec2 c1;
+                Vec2 r0;
+                Vec2 r1;
             };
             Vec2 v[2];
             __m128 data;
