@@ -7,5 +7,8 @@ file(GLOB_RECURSE ALL_FILES ./*.h ./*.cpp)
 
 add_executable (Math "Math.cpp" ${ALL_FILES})
 
+find_package(spdlog CONFIG REQUIRED)
+target_link_libraries(Math PRIVATE spdlog::spdlog spdlog::spdlog_header_only)
 
-set_property(TARGET Math PROPERTY CXX_STANDARD 20)
+find_package(benchmark CONFIG REQUIRED)
+target_link_libraries(Math PRIVATE benchmark::benchmark benchmark::benchmark_main)
