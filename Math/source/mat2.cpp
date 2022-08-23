@@ -97,7 +97,6 @@ namespace Math
 	{
 		return f[0];
 	}
-
 	real Mat2::e01()const
 	{
 		return f[1];
@@ -106,7 +105,6 @@ namespace Math
 	{
 		return f[2];
 	}
-
 	real Mat2::e11()const
 	{
 		return f[3];
@@ -217,7 +215,7 @@ namespace Math
 
 	real Mat2::determinant(const Mat2& mat)
 	{
-		return ;
+		return mat.r0.x * mat.r1.y - mat.r0.y * mat.r1.x;
 	}
 
 	bool Mat2::invert(Mat2& mat)
@@ -227,7 +225,7 @@ namespace Math
 		if (realEqual(det, 0))
 			return false;
 
-		//realSwap(mat.c0.x, mat.c1.y);
+		realSwap(mat.r0.y, mat.r1.x);
 		mat.f[1] *= -1;
 		mat.f[2] *= -1;
 		mat /= det;

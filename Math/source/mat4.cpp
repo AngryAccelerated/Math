@@ -183,7 +183,6 @@ namespace Math
 
 	Mat4& Mat4::set(const Mat3& other)
 	{
-
 		return *this;
 	}
 
